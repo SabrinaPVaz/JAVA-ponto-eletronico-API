@@ -1,17 +1,27 @@
 package com.atmapi.entities;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import javax.persistence.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "account")
 public class AccountEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "name")
+    @Column(name = "name", length = 70)
     private String name;
-    @Column(name = "number")
+    @Column(name = "number", unique = true, length = 15)
     private Integer number;
     @Column(name = "balance")
     private Double balance;
@@ -20,47 +30,4 @@ public class AccountEntity {
     @JoinColumn(name = "documentId")
     private AccountOwnerEntity accountOwner;
 
-
-    public AccountEntity() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
-
-    public AccountOwnerEntity getAccountOwner() {
-        return accountOwner;
-    }
-
-    public void setAccountOwner(AccountOwnerEntity accountOwner) {
-        this.accountOwner = accountOwner;
-    }
 }
