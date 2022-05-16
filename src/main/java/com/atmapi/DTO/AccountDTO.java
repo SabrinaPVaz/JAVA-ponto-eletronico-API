@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -22,5 +24,7 @@ public class AccountDTO {
     private Integer number;
     @NotBlank
     private Double balance;
+    @NotBlank
+    private LocalDateTime createdAt;
 
 }
