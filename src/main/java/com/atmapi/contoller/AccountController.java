@@ -29,8 +29,8 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> SaveAccount(@RequestBody @Valid AccountDTO accountDTO){
-        if(accountService.existsByNumber(accountDTO.getNumber())){
+    public ResponseEntity<Object> SaveAccount(@RequestBody @Valid AccountDTO accountDTO) {
+        if (accountService.existsByNumber(accountDTO.getNumber())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Account Number Already Exists");
         }
 
@@ -41,17 +41,40 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountEntity>> getAllAccounts(){
+    public ResponseEntity<List<AccountEntity>> getAllAccounts() {
         return ResponseEntity.status(HttpStatus.OK).body(accountService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getAccountById(@PathVariable (value = "id") Long id){
+    public ResponseEntity<Object> getAccountById(@PathVariable(value = "id") Long id) {
         Optional<AccountEntity> accountEntity = accountService.findById(id);
-        if(!accountEntity.isPresent()){
+        if (!accountEntity.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account Not Found");
         }
         return ResponseEntity.status(HttpStatus.OK).body(accountEntity.get());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteAccountById(@PathVariable(value = "id") Long id) {
+        Optional<AccountEntity> accountEntity = accountService.findById(id);
+        if (!accountEntity.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account Not Found");
+        }
+        accountService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Account Deleted");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateAccountById(@PathVariable(value = "id") Long id, @RequestBody @Valid AccountDTO accountDTO) {
+        Optional<AccountEntity> accountEntity = accountService.findById(id);
+        if (!accountEntity.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account Not Found");
+        }
+        AccountEntity account = accountEntity.get();
+        account.setName(accountDTO.getName());
+        account.setNumber(accountDTO.getNumber());
+        account.setBalance(accountDTO.getBalance());
+
+        return ResponseEntity.status(HttpStatus.OK).body(accountService.save(account));
+    }
 }

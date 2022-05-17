@@ -34,4 +34,9 @@ public class AccountService {
     public Optional<AccountEntity> findById(Long id) {
         return accountRepository.findById(id);
     }
+
+    @Transactional
+    public void deleteById(Long id) {
+        accountRepository.deleteById(id);
+    }
 }
