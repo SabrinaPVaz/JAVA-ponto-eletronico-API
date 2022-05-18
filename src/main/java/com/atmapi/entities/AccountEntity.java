@@ -28,8 +28,4 @@ public class AccountEntity {
     @Column (name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "documentId")
-    private AccountOwnerEntity accountOwner;
-
 }

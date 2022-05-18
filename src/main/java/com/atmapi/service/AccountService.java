@@ -1,42 +1,49 @@
 package com.atmapi.service;
 
+import com.atmapi.DTO.AccountDTO;
 import com.atmapi.entities.AccountEntity;
+import com.atmapi.exception.AtmException;
+import com.atmapi.exception.InfoMessages;
 import com.atmapi.repositories.AccountRepository;
+import com.atmapi.requestDTO.AccountRequestDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AccountService {
 
-    private final AccountRepository accountRepository;
-
+    @Autowired
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
-    @Transactional
-    public AccountEntity save(AccountEntity accountEntity) {
-        return accountRepository.save(accountEntity);
+    private final AccountRepository accountRepository;
+
+
+    public AccountDTO saveAccount(AccountRequestDTO accountRequestDTO) throws AtmException {
+        Optional<AccountEntity> optAccountEntity = accountRepository.findByNumber(accountRequestDTO.getNumber());
+        if (optAccountEntity.isPresent()) {
+            throw new AtmException(InfoMessages.ACCOUNT_ALREADY_EXISTS);
+        }
+        AccountEntity accountEntity = optAccountEntity.get();
+        accountEntity.setName(accountRequestDTO.getName());
+        accountEntity.setNumber(accountRequestDTO.getNumber());
+        accountEntity.setBalance(accountRequestDTO.getBalance());
+        accountRepository.save(accountEntity);
+
+        return entityConverterDto(accountEntity);
     }
 
-    public boolean existsByNumber(Integer number) {
-        return accountRepository.existsByNumber(number);
+    public AccountDTO entityConverterDto(AccountEntity accountEntity) {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setName(accountEntity.getName());
+        accountDTO.setNumber(accountEntity.getNumber());
+        accountDTO.setBalance(accountEntity.getBalance());
+        return accountDTO;
     }
 
-    public List<AccountEntity> findAll() {
-        return accountRepository.findAll();
-    }
-
-    public Optional<AccountEntity> findById(Long id) {
-        return accountRepository.findById(id);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
-        accountRepository.deleteById(id);
-    }
 }
+
+
